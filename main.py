@@ -45,9 +45,14 @@ class Main:
     def cli_parser(self,choices = range(1,6)):
         parser = ArgumentParser(prog = "Attendance Manager CLI",
             description = "Interactive terminal UI for viewing attendance")
-        parser.add_argument("-o","--option",type = int, help = """
-        1. Add Attendence\n2. Toggle Attendence\n3. Archive semester (move old data & create new skeleton)
-        \n4. 4. Create new semester configuration\n5. Exit""",choices = choices, required = True)
+        parser.add_argument("-o","--option",type = int, help = (
+        "1. Add Attendence\n"
+        "2. Toggle Attendence\n"
+        "3. Archive semester (move old data & create new skeleton)\n"
+        "4. Create new semester configuration\n"
+        "5. Exit")
+        ,choices = choices, required = True)
+
         args = parser.parse_args()
         return args.option
 
