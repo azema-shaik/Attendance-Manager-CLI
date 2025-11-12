@@ -190,6 +190,32 @@ class Main:
             print("Skipping for now")
         return True
     
+    def _save_semester(self, sem_id, sem_end_date):
+        p = self._semester_config_path()
+        p.parent.mkdir(parents=True, exist_ok=True)
+        if not (sem_id and sem_end_date):
+            print("'Semester ID' and 'Semester End Date' cannot be left empty")
+            return False
+        try:
+            semester_end_date = datetime.strptime(sem_end_date,"%d/%m/%Y")
+        except ValueError as e:
+            print("Semester end date is not in expexted fomat of dd/mm/YYYY")
+            return False
+        
+        cfg = {
+        "semester_id": sem_id,
+        "start_date": datetime.now().strftime("%Y-%m-%d"),
+        "end_date": semester_end_date.strftime("%Y-%m-%d")
+        }
+        json.dump(cfg,open(p,"w"),indent = 2)
+        
+
+        if self.has_semester_ended(cfg):
+            print("Semester End date cannot be before current date")
+            return False
+        return cfg
+
+    
     def save_semester_config(self):
         """
         Save new semester data to semester_config.cfg in below format.
@@ -199,31 +225,15 @@ class Main:
             "end_date": "2025-10-12"
         }
         """
-        p = self._semester_config_path()
-        p.parent.mkdir(parents=True, exist_ok=True)
+        
 
         semester_id = input("Semester ID: ").strip()
         semester_end_date = input("Semester End Date in dd/mm/YYYY format: ").strip()
+        return self._save_semester(semester_id, semester_end_date)
 
-        if not (semester_id and semester_end_date):
-            print("'Semester ID' and 'Semester End Date' cannot be left empty")
-            return 
-        try:
-            semester_end_date = datetime.strptime(semester_end_date,"%d/%m/%Y")
-        except ValueError as e:
-            print("Semester end date is not in expexted fomat of dd/mm/YYYY")
-            return 
         
-        cfg = {
-        "semester_id": semester_id,
-        "start_date": datetime.now().strftime("%Y-%m-%d"),
-        "end_date": semester_end_date.strftime("%Y-%m-%d")
-        }
 
-        if self.has_semester_ended(cfg):
-            return "Semester End date cannot be before current date"
-
-        json.dump(cfg,open(p,"w"),indent = 2)
+        
 
 
         
